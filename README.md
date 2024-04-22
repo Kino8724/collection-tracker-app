@@ -1,6 +1,4 @@
 # Collection Tracker App
-----------
-## Description
 This project is a personal project I've wanted to build for a long time now. It is for the purpose of helping those who have large collections and would like the ability to keep track of all their stuff easier.
 ----------
 ## 5 W's of this project
