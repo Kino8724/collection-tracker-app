@@ -9,7 +9,7 @@ This is for anyone with a big collection of anything or many things!
 
 ### What
 
-It is an application built with React Native and stores all of the information of the collection(s) locally on the phone using mySQL so no pesky cloud database costs :3
+It is an application built with React Native and stores all of the information of the collection(s) locally on the phone using SQLite so no pesky cloud database costs :3
 
 ### When
 
