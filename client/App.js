@@ -15,7 +15,13 @@ function HomeScreen({ navigation }) {
   }, [isFocused])
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
+      {
+        collections.map((collection) => {
+          return (
+            <Text key={collection.id}>{collection.name}</Text>
+          )
+        })
+      }
       <Button title='Add New Collection' onPress={() => navigation.navigate("NewCollection")} />
       <Button title='Go to Details' onPress={() => navigation.navigate("Details")} />
     </View>
