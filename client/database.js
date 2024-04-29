@@ -63,12 +63,15 @@ const removeCollectionById = (id) => {
   )
 }
 
-const getCollectionById = (id) => {
+const getCollectionById = (id, successCallback) => {
   db.transaction(
     tx => {
       tx.executeSql(
         "select * from collections where id=?;",
-        [id]
+        [id],
+        (_, { rows: { _array } }) => {
+          successCallback(_array)
+        }
       )
     }
   )

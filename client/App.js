@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { setUpTables, getAllTables, createNewCollection, getAllCollections, removeCollectionById } from './database';
+import { setUpTables, getAllTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById } from './database';
 
 
 function HomeScreen({ navigation }) {
@@ -23,7 +23,11 @@ function HomeScreen({ navigation }) {
         collections.map((collection) => {
           return (
             <View key={collection.id} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-              <Text>{collection.name}</Text>
+              <Button title={collection.name} onPress={() => {
+                navigation.navigate("Details", {
+                  collectionId: collection.id
+                })
+              }} />
               <Button title='Remove' onPress={() => {
                 handleRemoveButton(collection.id)
                 removeCollectionById(collection.id)
@@ -34,11 +38,20 @@ function HomeScreen({ navigation }) {
         })
       }
       <Button title='Add New Collection' onPress={() => navigation.navigate("NewCollection")} />
-      <Button title='Go to Details' onPress={() => navigation.navigate("Details")} />
     </View>
   );
 }
-function DetailsScreen({ navigation }) {
+function DetailsScreen({ route, navigation }) {
+  const { collectionId } = route.params;
+  console.log("Collection ID: " + collectionId)
+  const isFocused = useIsFocused()
+  const [collection, setCollection] = React.useState([])
+  React.useEffect(() => {
+    getCollectionById(collectionId, setCollection);
+
+  }, [isFocused])
+
+  console.log("Collection: ", + collection)
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Details Screen</Text>
@@ -46,6 +59,7 @@ function DetailsScreen({ navigation }) {
     </View>
   );
 }
+
 function CreateCollectionScreen({ navigation }) {
   const [name, setName] = React.useState("")
   return (
