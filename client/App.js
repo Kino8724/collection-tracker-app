@@ -2,7 +2,7 @@ import * as React from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { setUpTables, getAllTables, createNewCollection, getAllCollections } from './database';
+import { setUpTables, getAllTables, createNewCollection, getAllCollections, removeCollectionById } from './database';
 
 
 function HomeScreen({ navigation }) {
@@ -13,12 +13,23 @@ function HomeScreen({ navigation }) {
     console.log(collections)
 
   }, [isFocused])
+  function handleRemoveButton(id) {
+    let newList = collections.filter((collection) => collection.id != id);
+    setCollections(newList)
+  }
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       {
         collections.map((collection) => {
           return (
-            <Text key={collection.id}>{collection.name}</Text>
+            <View key={collection.id} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text>{collection.name}</Text>
+              <Button title='Remove' onPress={() => {
+                handleRemoveButton(collection.id)
+                removeCollectionById(collection.id)
+              }
+              } />
+            </View>
           )
         })
       }

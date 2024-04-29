@@ -52,4 +52,27 @@ const createNewCollection = (collectionName) => {
 
 }
 
-export { getAllTables, setUpTables, createNewCollection, getAllCollections }
+const removeCollectionById = (id) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "delete from collections where id=?;",
+        [id]
+      )
+    }
+  )
+}
+
+const getCollectionById = (id) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "select * from collections where id=?;",
+        [id]
+      )
+    }
+  )
+}
+
+
+export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById }
