@@ -8,8 +8,11 @@ import { setUpTables, getAllTables, createNewCollection, getAllCollections, remo
 function HomeScreen({ navigation }) {
   const isFocused = useIsFocused()
   const [collections, setCollections] = React.useState([])
+  // const [test, setTest] = React.useState([])
   React.useEffect(() => {
     getAllCollections(setCollections)
+    // getCollectionById(1, setTest)
+    // console.log("test: " + test[0].name)
     console.log(collections)
 
   }, [isFocused])
@@ -18,11 +21,11 @@ function HomeScreen({ navigation }) {
     setCollections(newList)
   }
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
       {
         collections.map((collection) => {
           return (
-            <View key={collection.id} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+            <View key={collection.id} style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'black' }}>
               <Button title={collection.name} onPress={() => {
                 navigation.navigate("Details", {
                   collectionId: collection.id
@@ -42,21 +45,18 @@ function HomeScreen({ navigation }) {
   );
 }
 function DetailsScreen({ route, navigation }) {
-  const { collectionId } = route.params;
-  console.log("Collection ID: " + collectionId)
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
   const [collection, setCollection] = React.useState([])
+  const { collectionId } = route.params;
   React.useEffect(() => {
-    getCollectionById(collectionId, setCollection);
-
+    getCollectionById(collectionId, setCollection)
+    console.log("String collection: " + collection)
   }, [isFocused])
-
-  console.log("Collection: ", + collection)
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-      <Button title='Go to Home' onPress={() => navigation.navigate("Home")} />
-    </View>
+    < View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }
+    }>
+      <Text>Input ID: {collection.name}</Text>
+    </View >
   );
 }
 

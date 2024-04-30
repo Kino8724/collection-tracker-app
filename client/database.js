@@ -70,7 +70,25 @@ const getCollectionById = (id, successCallback) => {
         "select * from collections where id=?;",
         [id],
         (_, { rows: { _array } }) => {
-          successCallback(_array)
+          let arr = JSON.stringify(_array)
+          console.log("JSON String initially: " + arr)
+          let finalArray = "";
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == "[") {
+              continue
+            }
+            else if (arr[i] == "]") {
+              continue
+            }
+            else {
+              finalArray += arr[i]
+            }
+
+          }
+          console.log("Final Array after parsing" + finalArray)
+
+
+          successCallback(JSON.parse(finalArray))
         }
       )
     }
