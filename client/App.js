@@ -56,19 +56,6 @@ function HomeScreen({ navigation }) {
     </View>
   );
 }
-function DetailsScreen({ route, navigation }) {
-  const isFocused = useIsFocused();
-  const [collection, setCollection] = React.useState([])
-  const { collectionId } = route.params;
-  React.useEffect(() => {
-    getCollectionById(collectionId, setCollection)
-  }, [isFocused])
-  return (
-    < View style={{ alignItems: 'center', justifyContent: 'center', padding: 25 }}>
-      <Text style={{ fontSize: 30 }}>{collection.name}</Text>
-    </View >
-  );
-}
 
 function CreateCollectionScreen({ navigation }) {
   const [name, setName] = React.useState("")
@@ -79,11 +66,56 @@ function CreateCollectionScreen({ navigation }) {
       }} />
       <Button title='Submit' onPress={() => {
         console.log("Button submitted with: " + name)
-        createNewCollection(name)
+        try {
+          createNewCollection(name)
+        } catch (error) {
+          console.log(error)
+        }
         navigation.navigate("Home")
       }} />
     </View>
 
+  )
+}
+
+function DetailsScreen({ route, navigation }) {
+  const isFocused = useIsFocused();
+  const [collection, setCollection] = React.useState([])
+  const { collectionId } = route.params;
+  React.useEffect(() => {
+    getCollectionById(collectionId, setCollection)
+  }, [isFocused])
+  return (
+    < View style={{ alignItems: 'center', justifyContent: 'center', padding: 25 }}>
+      <Text style={{ fontSize: 30 }}>{collection.name}</Text>
+      <Button title='Add New Item' onPress={() => navigation.navigate("NewItem", { id: collection.id })} />
+    </View >
+  );
+}
+
+function CreateItemScreen({ route, navigation }) {
+  const [name, setName] = React.useState("")
+  const [description, setDescription] = React.useState("")
+  const [collectionId, setCollectionID] = React.useState(route.params.id);
+
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+      <TextInput placeholder='Item Name:' onChangeText={newText => setName(newText)} style={{
+        borderWidth: 2, borderColor: 'black', padding: 15
+      }} />
+      <TextInput placeholder='Description:' onChangeText={newText => setDescription(newText)} style={{
+        borderWidth: 2, borderColor: 'black', padding: 15
+      }} />
+      <Button title='Submit' onPress={() => {
+        console.log("Button submitted with: " + name + ", " + description + ", " + collectionId)
+        try {
+          createNewItem(name, description, collectionId)
+        } catch (error) {
+          console.log(error)
+        }
+        navigation.navigate("Home")
+      }} />
+    </View>
   )
 }
 
@@ -99,6 +131,7 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="NewCollection" component={CreateCollectionScreen} />
+        <Stack.Screen name="NewItem" component={CreateItemScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
