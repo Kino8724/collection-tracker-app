@@ -10,9 +10,9 @@ import {
   removeCollectionById,
   getCollectionById,
   getItemById,
-  getAllItems,
   createNewItem,
-  removeItemById
+  removeItemById,
+  getAllItemsByCollection
 } from './database';
 
 
@@ -80,14 +80,32 @@ function CreateCollectionScreen({ navigation }) {
 
 function DetailsScreen({ route, navigation }) {
   const isFocused = useIsFocused();
+  const [items, setItems] = React.useState([])
   const [collection, setCollection] = React.useState([])
   const { collectionId } = route.params;
   React.useEffect(() => {
     getCollectionById(collectionId, setCollection)
+    getAllItemsByCollection(collectionId, setItems)
   }, [isFocused])
   return (
     < View style={{ alignItems: 'center', justifyContent: 'center', padding: 25 }}>
-      <Text style={{ fontSize: 30 }}>{collection.name}</Text>
+      <Text style={{ fontSize: 36, marginBottom: 25 }}>{collection.name}</Text>
+      {
+        items.map((item) => {
+          return (
+            <View key={item.id} style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'black' }}>
+              <Button title={item.name} onPress={() => {
+                console.log(item.description)
+              }} />
+              <Button title='Remove' onPress={() => {
+                handleRemoveButton(item.id)
+                removeItemById(item.id)
+              }
+              } />
+            </View>
+          )
+        })
+      }
       <Button title='Add New Item' onPress={() => navigation.navigate("NewItem", { id: collection.id })} />
     </View >
   );

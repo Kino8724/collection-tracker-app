@@ -106,12 +106,12 @@ const createNewItem = (itemName, itemDescription, collectionId) => {
   )
 }
 
-const getAllItems = (successCallback) => {
+const getAllItemsByCollection = (collectionId, successCallback) => {
   db.transaction(
     tx => {
       tx.executeSql(
-        "select * from items",
-        [],
+        "select * from items where collection_id=?",
+        [collectionId],
         (_, { rows: { _array } }) => {
           successCallback(_array)
         }
@@ -163,4 +163,4 @@ const removeItemById = (id) => {
   )
 }
 
-export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById, getAllItems, getItemById, removeItemById, createNewItem }
+export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById, getAllItemsByCollection, getItemById, removeItemById, createNewItem }
