@@ -78,7 +78,7 @@ function CreateCollectionScreen({ navigation }) {
   )
 }
 
-function DetailsScreen({ route, navigation }) {
+function CollectionDetailsScreen({ route, navigation }) {
   const isFocused = useIsFocused();
   const [items, setItems] = React.useState([])
   const [collection, setCollection] = React.useState([])
@@ -87,9 +87,13 @@ function DetailsScreen({ route, navigation }) {
     getCollectionById(collectionId, setCollection)
     getAllItemsByCollection(collectionId, setItems)
   }, [isFocused])
+  function handleRemoveButton(id) {
+    let newList = items.filter((item) => item.id != id);
+    setItems(newList)
+  }
   return (
-    < View style={{ alignItems: 'center', justifyContent: 'center', padding: 25 }}>
-      <Text style={{ fontSize: 36, marginBottom: 25 }}>{collection.name}</Text>
+    < View style={{ alignItems: 'center', justifyContent: 'center', padding: 25, gap: 10 }}>
+      <Text style={{ fontSize: 36, marginBottom: 15 }}>{collection.name}</Text>
       {
         items.map((item) => {
           return (
@@ -131,11 +135,12 @@ function CreateItemScreen({ route, navigation }) {
         } catch (error) {
           console.log(error)
         }
-        navigation.navigate("Home")
+        navigation.goBack()
       }} />
     </View>
   )
 }
+
 
 const Stack = createNativeStackNavigator();
 
@@ -147,7 +152,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Details" component={CollectionDetailsScreen} />
         <Stack.Screen name="NewCollection" component={CreateCollectionScreen} />
         <Stack.Screen name="NewItem" component={CreateItemScreen} />
       </Stack.Navigator>
