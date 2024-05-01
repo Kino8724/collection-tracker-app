@@ -2,7 +2,19 @@ import * as React from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { setUpTables, getAllTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById } from './database';
+import {
+  setUpTables,
+  getAllTables,
+  createNewCollection,
+  getAllCollections,
+  removeCollectionById,
+  getCollectionById,
+  getItemById,
+  getAllItems,
+  createNewItem,
+  removeItemById
+} from './database';
+
 
 
 function HomeScreen({ navigation }) {

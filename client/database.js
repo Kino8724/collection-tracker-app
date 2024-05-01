@@ -163,4 +163,4 @@ const removeItemById = (id) => {
   )
 }
 
-export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById }
+export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById, getAllItems, getItemById, removeItemById, createNewItem }
