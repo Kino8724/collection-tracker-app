@@ -152,4 +152,15 @@ const getItemById = (id, successCallback) => {
   )
 }
 
+const removeItemById = (id) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "delete from items where id=?;",
+        [id]
+      )
+    }
+  )
+}
+
 export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById }
