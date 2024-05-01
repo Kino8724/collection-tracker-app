@@ -95,5 +95,16 @@ const getCollectionById = (id, successCallback) => {
   )
 }
 
+const createNewItem = (itemName, itemDescription, collectionId) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "insert into items(name, description, collection_id) values(?,?,?);",
+        [itemName, itemDescription, collectionId]
+      )
+    }
+  )
+}
+
 
 export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById }

@@ -50,12 +50,10 @@ function DetailsScreen({ route, navigation }) {
   const { collectionId } = route.params;
   React.useEffect(() => {
     getCollectionById(collectionId, setCollection)
-    console.log("String collection: " + collection)
   }, [isFocused])
   return (
-    < View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }
-    }>
-      <Text>Input ID: {collection.name}</Text>
+    < View style={{ alignItems: 'center', justifyContent: 'center', padding: 25 }}>
+      <Text style={{ fontSize: 30 }}>{collection.name}</Text>
     </View >
   );
 }
