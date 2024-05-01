@@ -106,5 +106,50 @@ const createNewItem = (itemName, itemDescription, collectionId) => {
   )
 }
 
+const getAllItems = (successCallback) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "select * from items",
+        [],
+        (_, { rows: { _array } }) => {
+          successCallback(_array)
+        }
+      )
+    }
+  )
+}
+
+const getItemById = (id, successCallback) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "select * from collections where id=?;",
+        [id],
+        (_, { rows: { _array } }) => {
+          let arr = JSON.stringify(_array)
+          console.log("JSON String initially: " + arr)
+          let finalArray = "";
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == "[") {
+              continue
+            }
+            else if (arr[i] == "]") {
+              continue
+            }
+            else {
+              finalArray += arr[i]
+            }
+
+          }
+          console.log("Final Array after parsing" + finalArray)
+
+
+          successCallback(JSON.parse(finalArray))
+        }
+      )
+    }
+  )
+}
 
 export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById }
