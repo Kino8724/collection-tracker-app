@@ -63,6 +63,18 @@ const removeCollectionById = (id) => {
   )
 }
 
+const updateCollectionById = (id, collectionName) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "update collections set name=? where id=?",
+        [collectionName, id]
+      )
+    }
+  )
+
+}
+
 const getCollectionById = (id, successCallback) => {
   db.transaction(
     tx => {
@@ -124,7 +136,7 @@ const getItemById = (id, successCallback) => {
   db.transaction(
     tx => {
       tx.executeSql(
-        "select * from collections where id=?;",
+        "select * from items where id=?;",
         [id],
         (_, { rows: { _array } }) => {
           let arr = JSON.stringify(_array)
@@ -161,6 +173,18 @@ const removeItemById = (id) => {
       )
     }
   )
+}
+
+const updateItemById = (id, itemName) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "update items set name=?, description=? where id=?;",
+        [itemName, id]
+      )
+    }
+  )
+
 }
 
 export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById, getAllItemsByCollection, getItemById, removeItemById, createNewItem }
