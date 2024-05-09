@@ -1,4 +1,4 @@
-import * as SQLite from 'expo-sqlite';
+import * as SQLite from 'expo-sqlite/legacy';
 
 const db = SQLite.openDatabase("collections.db")
 const setUpTables = () => {
@@ -52,11 +52,25 @@ const createNewCollection = (collectionName) => {
 
 }
 
+const getAllItems = (successCallback) => {
+  db.transaction(
+    tx => {
+      tx.executeSql(
+        "select * from items",
+        [],
+        (_, { rows: { _array } }) => {
+          successCallback(_array)
+        }
+      )
+    }
+  )
+}
+
 const removeCollectionById = (id) => {
   db.transaction(
     tx => {
       tx.executeSql(
-        "delete from collections where id=?;",
+        "delete from collections where id=?",
         [id]
       )
     }
@@ -175,16 +189,16 @@ const removeItemById = (id) => {
   )
 }
 
-const updateItemById = (id, itemName) => {
+const updateItemById = (id, itemName, itemDescription) => {
   db.transaction(
     tx => {
       tx.executeSql(
         "update items set name=?, description=? where id=?;",
-        [itemName, id]
+        [itemName, itemDescription, id]
       )
     }
   )
 
 }
 
-export { getAllTables, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById, getAllItemsByCollection, getItemById, removeItemById, createNewItem }
+export { getAllTables, getAllItems, setUpTables, createNewCollection, getAllCollections, removeCollectionById, getCollectionById, getAllItemsByCollection, getItemById, removeItemById, createNewItem, updateCollectionById, updateItemById }

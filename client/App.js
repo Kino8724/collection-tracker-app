@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { View, Text, Button, TextInput } from 'react-native';
-import { NavigationContainer, useIsFocused } from '@react-navigation/native';
+import { NavigationContainer, useIsFocused, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {
+  updateItemById,
+  updateCollectionById,
   setUpTables,
   getAllTables,
   createNewCollection,
@@ -12,17 +14,22 @@ import {
   getItemById,
   createNewItem,
   removeItemById,
-  getAllItemsByCollection
+  getAllItemsByCollection,
+  getAllItems
 } from './database';
 
 
 
-function HomeScreen({ navigation }) {
+function HomeScreen() {
+  const navigation = useNavigation()
   const isFocused = useIsFocused()
   const [collections, setCollections] = React.useState([])
+  const [items, setItems] = React.useState([])
   React.useEffect(() => {
     getAllCollections(setCollections)
+    getAllItems(setItems)
     console.log(collections)
+    console.log(items)
 
   }, [isFocused])
   function handleRemoveButton(id) {
@@ -54,7 +61,8 @@ function HomeScreen({ navigation }) {
   );
 }
 
-function CreateCollectionScreen({ navigation }) {
+function CreateCollectionScreen() {
+  const navigation = useNavigation()
   const [name, setName] = React.useState("")
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -75,7 +83,34 @@ function CreateCollectionScreen({ navigation }) {
   )
 }
 
-function CollectionDetailsScreen({ route, navigation }) {
+function CollectionUpdateScreen({ route }) {
+  const navigation = useNavigation()
+  const isFocused = useIsFocused();
+  const [collection, setCollection] = React.useState([])
+  const { collectionId } = route.params;
+  React.useEffect(() => {
+    getCollectionById(collectionId, setCollection)
+  }, [isFocused])
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+      <TextInput value={collection.name} onChangeText={newText => setCollection({ ...collection, name: newText })} style={{
+        borderWidth: 2, borderColor: 'black', padding: 15
+      }} />
+      <Button title='Submit' onPress={() => {
+        console.log("Update submitted with: " + collection.name + ", " + collection.description)
+        try {
+          updateCollectionById(collection.id, collection.name, collection.description)
+        } catch (error) {
+          console.log(error)
+        }
+        navigation.goBack()
+      }} />
+    </View>
+  )
+}
+
+function CollectionDetailsScreen({ route }) {
+  const navigation = useNavigation()
   const isFocused = useIsFocused();
   const [items, setItems] = React.useState([])
   const [collection, setCollection] = React.useState([])
@@ -110,11 +145,13 @@ function CollectionDetailsScreen({ route, navigation }) {
         })
       }
       <Button title='Add New Item' onPress={() => navigation.navigate("NewItem", { id: collection.id })} />
+      <Button title='Edit Collection Name' onPress={() => navigation.navigate("Update Collection", { collectionId: collection.id })} />
     </View >
   );
 }
 
-function CreateItemScreen({ route, navigation }) {
+function CreateItemScreen({ route }) {
+  const navigation = useNavigation()
   const [name, setName] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [collectionId, setCollectionID] = React.useState(route.params.id);
@@ -140,7 +177,8 @@ function CreateItemScreen({ route, navigation }) {
   )
 }
 
-function ItemDetailsScreen({ route, navigation }) {
+function ItemDetailsScreen({ route }) {
+  const navigation = useNavigation()
   const isFocused = useIsFocused();
   const [item, setItem] = React.useState([])
   const { itemId } = route.params;
@@ -151,7 +189,39 @@ function ItemDetailsScreen({ route, navigation }) {
     <View style={{ padding: 25, gap: 10, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: 36, fontWeight: 'bold', textDecorationLine: 'underline', marginBottom: 15 }}>{item.name}</Text>
       <Text style={{ fontSize: 18 }}>{item.description}</Text>
-      <Button title='Edit Item' onPress='' />
+      <Button title='Edit Item' onPress={() => {
+        navigation.navigate("Update Item", { itemId: item.id })
+
+      }} />
+    </View>
+  )
+}
+
+function ItemUpdateScreen({ route }) {
+  const navigation = useNavigation()
+  const isFocused = useIsFocused();
+  const [item, setItem] = React.useState([])
+  const { itemId } = route.params;
+  React.useEffect(() => {
+    getItemById(itemId, setItem)
+  }, [isFocused])
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+      <TextInput value={item.name} onChangeText={newText => setItem({ ...item, name: newText })} style={{
+        borderWidth: 2, borderColor: 'black', padding: 15
+      }} />
+      <TextInput value={item.description} onChangeText={newText => setItem({ ...item, description: newText })} style={{
+        borderWidth: 2, borderColor: 'black', padding: 15
+      }} />
+      <Button title='Submit' onPress={() => {
+        console.log("Update submitted with: " + item.name + ", " + item.description)
+        try {
+          updateItemById(item.id, item.name, item.description)
+        } catch (error) {
+          console.log(error)
+        }
+        navigation.goBack()
+      }} />
     </View>
   )
 }
@@ -171,6 +241,8 @@ function App() {
         <Stack.Screen name="New Collection" component={CreateCollectionScreen} />
         <Stack.Screen name="NewItem" component={CreateItemScreen} />
         <Stack.Screen name="Item Details" component={ItemDetailsScreen} />
+        <Stack.Screen name="Update Item" component={ItemUpdateScreen} />
+        <Stack.Screen name="Update Collection" component={CollectionUpdateScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
