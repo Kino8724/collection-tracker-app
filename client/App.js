@@ -62,21 +62,28 @@ function HomeScreen() {
 }
 
 function CreateCollectionScreen() {
+  const [errors, setErrors] = React.useState({})
   const navigation = useNavigation()
   const [name, setName] = React.useState("")
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      {errors && <Text style={{ color: 'red' }}>{errors.name}</Text>}
       <TextInput placeholder='Collection Name:' onChangeText={newText => setName(newText)} style={{
         borderWidth: 2, borderColor: 'black', padding: 15
       }} />
       <Button title='Submit' onPress={() => {
         console.log("Button submitted with: " + name)
-        try {
-          createNewCollection(name)
-        } catch (error) {
-          console.log(error)
+        if (name.length < 2) {
+          setErrors({ ...errors, "name": "Collection must be more than 2 characters" })
+        } else {
+          try {
+            createNewCollection(name)
+          } catch (error) {
+            console.log(error)
+          }
+          navigation.navigate("Home")
+
         }
-        navigation.navigate("Home")
       }} />
     </View>
 
@@ -84,6 +91,7 @@ function CreateCollectionScreen() {
 }
 
 function CollectionUpdateScreen({ route }) {
+  const [errors, setErrors] = React.useState({})
   const navigation = useNavigation()
   const isFocused = useIsFocused();
   const [collection, setCollection] = React.useState([])
@@ -93,17 +101,24 @@ function CollectionUpdateScreen({ route }) {
   }, [isFocused])
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+      {errors && <Text style={{ color: 'red' }}>{errors.name}</Text>}
       <TextInput value={collection.name} onChangeText={newText => setCollection({ ...collection, name: newText })} style={{
         borderWidth: 2, borderColor: 'black', padding: 15
       }} />
       <Button title='Submit' onPress={() => {
         console.log("Update submitted with: " + collection.name + ", " + collection.description)
-        try {
-          updateCollectionById(collection.id, collection.name, collection.description)
-        } catch (error) {
-          console.log(error)
+        if (collection.name.length < 2) {
+          setErrors({ ...errors, "name": "Collection must be more than 2 characters" })
         }
-        navigation.goBack()
+        else {
+          try {
+            updateCollectionById(collection.id, collection.name, collection.description)
+          } catch (error) {
+            console.log(error)
+          }
+          navigation.navigate("Home")
+
+        }
       }} />
     </View>
   )
